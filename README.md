@@ -52,11 +52,11 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
 ### 测试
 
 #### 物流轨迹查询：
-![trae_test_queryTrace.png](../../../../image/trae_test_queryTrace.png)
+![trae_test_queryTrace.png](image/trae_test_queryTrace.png)
 #### 快递预估时效：
-![trae_test_estimateTime.png](../../../../image/trae_test_estimateTime.png)
+![trae_test_estimateTime.png](image/trae_test_estimateTime.png)
 #### 快递预估价格
-![trae_test_estimatePrice.png](../../../../image/trae_test_estimatePrice.png)
+![trae_test_estimatePrice.png](image/trae_test_estimatePrice.png)
 
 ### Tips
 如需获取账号信息（如 key、customer、secret），或免费试用100单，请访问API开放平台进行注册
