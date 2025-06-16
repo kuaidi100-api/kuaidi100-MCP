@@ -5,7 +5,25 @@
 uv python install 3.11
 ```
 
-### 配置本地项目
+### 一、在线获取依赖并使用（推荐）
+通过`uvx`命令一步获取kuaidi100_mcp并使用
+```json
+{
+  "mcpServers": {
+    "kuaidi100": {
+      "command": "uvx",
+      "args": [
+        "kuaidi100-mcp"
+      ],
+      "env": {
+        "KUAIDI100_API_KEY": "<YOUR_API_KEY>"
+      }
+    }
+  }
+}
+```
+
+### 二、下载至本地配置本地项目
 通过`uv`创建一个项目
 
 ```bash
