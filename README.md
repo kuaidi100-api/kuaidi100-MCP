@@ -5,7 +5,7 @@
 uv python install 3.11
 ```
 
-### 一、在线获取依赖并使用（推荐）
+### 一、STDIO方式：在线获取快递100 MCP服务运行（推荐）
 通过`uvx`命令一步获取kuaidi100_mcp并使用
 ```json
 {
@@ -23,7 +23,7 @@ uv python install 3.11
 }
 ```
 
-### 二、下载至本地配置本地项目
+### 二、STDIO方式：下载本项目至本地，配置本地项目后运行
 通过`uv`创建一个项目
 
 ```bash
@@ -64,6 +64,14 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
       }
     }
   }
+}
+```
+
+### 三、SSE方式：
+配置SSE链接和KEY后使用（可能存在客户端支持问题）
+```json
+"kuaidi100": {
+    "url": "https://api.kuaidi100.com/mcp/sse?key=<YOUR_API_KEY>"
 }
 ```
 
