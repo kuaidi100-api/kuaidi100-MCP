@@ -44,7 +44,7 @@ async def query_trace(arguments: dict) -> list[types.TextContent | types.ImageCo
 
 async def estimate_time(arguments: dict) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
     """
-    通过快递公司编码、收寄件地址、下单时间和业务/产品类型、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估。接口返回的now属性为当前时间，使用arrivalTime-now计算预计还需运输时间",
+    通过快递公司编码、收寄件地址、下单时间和业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估",
     """
     method = "estimateTime"
     kuaidi_com = arguments.get("kuaidi_com", "")
@@ -69,7 +69,7 @@ async def estimate_time(arguments: dict) -> list[types.TextContent | types.Image
 
 async def estimate_time_with_logistic(arguments: dict) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
     """
-    查询物流轨迹服务, 根据快递单号查询物流轨迹
+    通过快递公司编码、收寄件地址、下单时间和业务/产品类型、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估。接口返回的now属性为当前时间，使用arrivalTime-now计算预计还需运输时间
     """
     method = "estimateTimeWithLogistic"
     kuaidi_com = arguments.get("kuaidi_com", "")
@@ -147,7 +147,7 @@ async def list_tools() -> list[types.Tool]:
         ),
         types.Tool(
             name="estimate_time",
-            description="查询物流轨迹服务，传入快递单号和手机号，获取对应快递的物流轨迹",
+            description="通过快递公司编码、收寄件地址、下单时间和业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估",
             inputSchema={
                 "type": "object",
                 "required": ["kuaidi_com", "from", "to"],
