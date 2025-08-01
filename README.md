@@ -8,7 +8,7 @@ uv python install 3.11
 ### 获取快递100 API KEY
 登录快递100获取： [快递100官方](https://api.kuaidi100.com/extend/register?code=d1660fe0390d4084b4f27b19d2feee02) （注意不要泄露授权key，以防被他人盗用！！！）
 
-### 一、STDIO方式：在线获取快递100 MCP服务运行（推荐）
+### 一、STDIO方式：在线获取快递100 MCP服务运行
 通过`uvx`命令一步获取kuaidi100_mcp并使用
 ```json
 {
@@ -68,7 +68,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
 ```
 
 ### 三、SSE方式：
-配置SSE链接和KEY后使用（可能存在客户端支持问题）
+配置SSE链接和KEY后使用
 ```json
 "kuaidi100": {
     "url": "https://api.kuaidi100.com/mcp/sse?key=<YOUR_API_KEY>"
