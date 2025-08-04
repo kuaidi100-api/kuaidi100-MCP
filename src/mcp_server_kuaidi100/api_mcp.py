@@ -9,7 +9,6 @@ from mcp.types import TextContent, ImageContent, EmbeddedResource
 # 创建MCP服务器实例
 mcp = FastMCP(
     name="mcp-server-kuaidi100",
-    version="1.0.0",
     instructions="This is a MCP server for kuaidi100 API."
 )
 
