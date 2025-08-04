@@ -30,15 +30,15 @@ uv python install 3.11
 通过`uv`创建一个项目
 
 ```bash
-uv init mcp_server_kuaidi100
+uv init kuaidi100_mcp
 ```
 
 将`api_mcp.py`拷贝到该目录下，通过如下命令测试mcp server是否正常运行
 
 ```bash
-uv run --with mcp[cli] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
+uv run --with mcp[cli] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
 # 如果是mac，需要加转义符
-uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
+uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
 ```
 
 如果没有报错则MCP Server启动成功
@@ -57,7 +57,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py
         "mcp[cli]",
         "mcp",
         "run",
-        "{YOUR_PATH}/mcp_server_kuaidi100/api_mcp.py"
+        "{YOUR_PATH}/kuaidi100_mcp/api_mcp.py"
       ],
       "env": {
         "KUAIDI100_API_KEY": "<YOUR_API_KEY>"
