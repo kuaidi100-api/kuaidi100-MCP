@@ -19,7 +19,7 @@ uv python install 3.11
         "kuaidi100-mcp"
       ],
       "env": {
-        "KUAIDI100_API_KEY": "<YOUR_API_KEY>"
+        "KUAIDI100_API_KEY": "YOUR_API_KEY"
       }
     }
   }
@@ -60,7 +60,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
         "{YOUR_PATH}/kuaidi100_mcp/api_mcp.py"
       ],
       "env": {
-        "KUAIDI100_API_KEY": "<YOUR_API_KEY>"
+        "KUAIDI100_API_KEY": "YOUR_API_KEY"
       }
     }
   }
@@ -71,7 +71,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
 配置SSE链接和KEY后使用
 ```json
 "kuaidi100": {
-    "url": "https://api.kuaidi100.com/mcp/sse?key=<YOUR_API_KEY>"
+    "url": "https://api.kuaidi100.com/mcp/sse?key=YOUR_API_KEY"
 }
 ```
 
