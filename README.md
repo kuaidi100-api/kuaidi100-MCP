@@ -67,7 +67,15 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
 }
 ```
 
-### 三、SSE方式：
+### 三、Streamable方式：
+配置Http链接和KEY后使用
+```json
+"kuaidi100": {
+    "url": "https://api.kuaidi100.com/mcp/streamable?key=YOUR_API_KEY"
+}
+```
+
+### 四、SSE方式（更推荐Streamable连接方式）：
 配置SSE链接和KEY后使用
 ```json
 "kuaidi100": {
