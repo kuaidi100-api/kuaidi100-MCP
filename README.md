@@ -1,15 +1,10 @@
-## 快递100 MCP Server (Python)
-通过`uv`安装`python`，最低版本要求为3.11
-
-```bash
-uv python install 3.11
-```
+## 快递100 MCP Server
 
 ### 获取快递100 API KEY
 登录快递100获取： [快递100官方](https://api.kuaidi100.com/extend/register?code=d1660fe0390d4084b4f27b19d2feee02) （注意不要泄露授权key，以防被他人盗用！！！）
 
 ### 一、STDIO方式：在线获取快递100 MCP服务运行
-通过`uvx`命令一步获取kuaidi100_mcp并使用
+#### Python方式：通过`uvx`命令一步获取kuaidi100_mcp并使用
 ```json
 {
   "mcpServers": {
@@ -25,39 +20,17 @@ uv python install 3.11
   }
 }
 ```
-
-### 二、STDIO方式：下载本项目至本地，配置本地项目后运行
-通过`uv`创建一个项目
-
-```bash
-uv init kuaidi100_mcp
-```
-
-将`api_mcp.py`拷贝到该目录下，通过如下命令测试mcp server是否正常运行
-
-```bash
-uv run --with mcp[cli] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
-# 如果是mac，需要加转义符
-uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
-```
-
 如果没有报错则MCP Server启动成功
 
-#### 在支持MCP的客户端中使用
-在MCP Server配置文件中添加如下内容后保存
-
+#### NodeJs方式：通过npx命令一步获取kuaidi100_mcp并使用
 ```json
 {
   "mcpServers": {
     "kuaidi100": {
-      "command": "uv",
+      "command": "npx",
       "args": [
-        "run",
-        "--with",
-        "mcp[cli]",
-        "mcp",
-        "run",
-        "{YOUR_PATH}/kuaidi100_mcp/api_mcp.py"
+        "-y",
+        "@kuaidi100-mcp/kuaidi100-mcp-server"
       ],
       "env": {
         "KUAIDI100_API_KEY": "YOUR_API_KEY"
@@ -66,8 +39,9 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
   }
 }
 ```
+关联项目：https://github.com/kuaidi100-api/kuaidi100-MCP-Nodejs
 
-### 三、Streamable方式：
+### 二、Streamable方式：
 配置Http链接和KEY后使用
 ```json
 "kuaidi100": {
@@ -75,7 +49,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/kuaidi100_mcp/api_mcp.py
 }
 ```
 
-### 四、SSE方式（更推荐Streamable连接方式）：
+### 三、SSE方式（更推荐Streamable连接方式）：
 配置SSE链接和KEY后使用
 ```json
 "kuaidi100": {
