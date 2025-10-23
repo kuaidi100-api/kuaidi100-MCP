@@ -39,7 +39,7 @@
   }
 }
 ```
-关联项目：https://github.com/kuaidi100-api/kuaidi100-MCP-Nodejs
+关联项目：[kuaidi100-MCP-Nodejs](https://github.com/kuaidi100-api/kuaidi100-MCP-Nodejs)
 
 ### 二、Streamable方式：
 配置Http链接和KEY后使用
