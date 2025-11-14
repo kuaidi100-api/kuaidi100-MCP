@@ -134,5 +134,5 @@ async def http_get(url: str = Field(description="请求的URL"),
 
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+    mcp.run(transport="stdio")
 
