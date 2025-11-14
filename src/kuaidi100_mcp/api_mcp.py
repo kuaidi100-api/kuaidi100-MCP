@@ -25,15 +25,16 @@ async def query_trace(kuaidi_num: str = Field(description="快递单号"),
     """
     查询物流轨迹服务, 根据快递单号查询物流轨迹
     """
-    method = "queryTrace"
+    if not kuaidi100_api_key:
+        return 'error: KUAIDI100_API_KEY not set'
 
+    method = "queryTrace"
     # 调用查询物流轨迹API
     params = {
-        "key": f"{kuaidi100_api_key}",
-        "kuaidiNum": f"{kuaidi_num}",
-        "phone": f"{phone}",
+        "key": kuaidi100_api_key,
+        "kuaidiNum": kuaidi_num,
+        "phone": phone,
     }
-
     response = await http_get(kuaidi100_api_url + method, params)
     return response
 
@@ -47,16 +48,19 @@ async def estimate_time(kuaidi_com: str = Field(description="快递公司编码�
     """
     通过快递公司编码、收寄件地址、下单时间和业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估",
     """
+    if not kuaidi100_api_key:
+        return 'error: KUAIDI100_API_KEY not set'
+
     method = "estimateTime"
 
     # 调用查询物流轨迹API
     params = {
-        "key": f"{kuaidi100_api_key}",
-        "kuaidicom": f"{kuaidi_com}",
-        "from": f"{from_loc}",
-        "to": f"{to_loc}",
-        "orderTime": f"{order_time}",
-        "expType": f"{exp_type}",
+        "key": kuaidi100_api_key,
+        "kuaidicom": kuaidi_com,
+        "from": from_loc,
+        "to": to_loc,
+        "orderTime": order_time,
+        "expType": exp_type,
     }
     response = await http_get(kuaidi100_api_url + method, params)
 
@@ -73,17 +77,19 @@ async def estimate_time_with_logistic(kuaidi_com: str = Field(description="快�
     """
     通过快递公司编码、收寄件地址、下单时间和业务/产品类型、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估。接口返回的now属性为当前时间，使用arrivalTime-now计算预计还需运输时间
     """
-    method = "estimateTimeWithLogistic"
+    if not kuaidi100_api_key:
+        return 'error: KUAIDI100_API_KEY not set'
 
+    method = "estimateTimeWithLogistic"
     # 调用查询物流轨迹API
     params = {
-        "key": f"{kuaidi100_api_key}",
-        "kuaidicom": f"{kuaidi_com}",
-        "from": f"{from_loc}",
-        "to": f"{to_loc}",
-        "orderTime": f"{order_time}",
-        "expType": f"{exp_type}",
-        "logistic": f"{logistic}",
+        "key": kuaidi100_api_key,
+        "kuaidicom": kuaidi_com,
+        "from": from_loc,
+        "to": to_loc,
+        "orderTime": order_time,
+        "expType": exp_type,
+        "logistic": logistic,
     }
     response = await http_get(kuaidi100_api_url + method, params)
     return response
@@ -97,33 +103,36 @@ async def estimate_price(kuaidi_com: str = Field(description="快递公司的编
     """
     通过快递公司、收寄件地址和重量，预估快递公司运费
     """
+    if not kuaidi100_api_key:
+        return 'error: KUAIDI100_API_KEY not set'
+
     method = "estimatePrice"
 
     # 调用查询物流轨迹API
     params = {
-        "key": f"{kuaidi100_api_key}",
-        "kuaidicom": f"{kuaidi_com}",
-        "recAddr": f"{rec_addr}",
-        "sendAddr": f"{send_addr}",
-        "weight": f"{weight}",
+        "key": kuaidi100_api_key,
+        "kuaidicom": kuaidi_com,
+        "recAddr": rec_addr,
+        "sendAddr": send_addr,
+        "weight": weight,
     }
     response = await http_get(kuaidi100_api_url + method, params)
     return response
 
 
-async def http_get(url: str, params: dict) -> str:
+async def http_get(url: str = Field(description="请求的URL"),
+                   params: dict = Field(description="请求的参数")) -> str:
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params=params)
             response.raise_for_status()
-
+            return response.text
     except httpx.HTTPError as e:
         raise Exception(f"HTTP request failed: {str(e)}") from e
     except KeyError as e:
         raise Exception(f"Failed to parse response: {str(e)}") from e
-    return response.text
 
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+    mcp.run(transport="streamable-http")
 
