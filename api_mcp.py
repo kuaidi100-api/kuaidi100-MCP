@@ -1,3 +1,5 @@
+import os
+
 import httpx
 from mcp.server.fastmcp import FastMCP, Context
 from pydantic import Field
@@ -10,8 +12,8 @@ mcp = FastMCP(
 )
 
 """
-获取环境变量中的API密钥, 用于调用快递100API
-环境变量名为: KUAIDI100_API_KEY, 在客户端侧通过配置文件进行设置传入
+获取环境变量/Header中的API密钥, 用于调用快递100API
+变量名为: KUAIDI100_API_KEY
 获取方式请参考：https://poll.kuaidi100.com/manager/page/myinfo/enterprise
 """
 kuaidi100_api_url = "https://api.kuaidi100.com/stdio/"
@@ -131,6 +133,8 @@ def get_api_key(ctx: Context) -> str:
     kuaidi100_api_key = (headers.get("KUAIDI100_API_KEY")
                          or headers.get("kuaidi100-api-key")
                          or headers.get("kuaidi100_api_key"))
+    if not kuaidi100_api_key:
+        kuaidi100_api_key = os.getenv("KUAIDI100_API_KEY")
     if not kuaidi100_api_key:
         raise Exception('error: KUAIDI100_API_KEY not set')
     return kuaidi100_api_key
