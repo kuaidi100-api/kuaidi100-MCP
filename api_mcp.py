@@ -18,7 +18,7 @@ mcp = FastMCP(
 """
 kuaidi100_api_url = "https://api.kuaidi100.com/stdio/"
 
-@mcp.tool(name="query_trace", description="根据快递单号，返回对应的实时物流轨迹信息")
+@mcp.tool(name="query_trace", description="根据快递单号，返回对应的实时物流轨迹信息", structured_output=False)
 async def query_trace(ctx: Context,
                       kuaidi_num: str = Field(description="快递单号"),
                       phone: str = Field(description="手机号，仅顺丰速运、顺丰快运、中通快递必填", default="")) -> str:
@@ -40,7 +40,7 @@ async def query_trace(ctx: Context,
     return response
 
 
-@mcp.tool(name="estimate_time", description="通过快递公司编码、收寄件地址、下单时间、业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估")
+@mcp.tool(name="estimate_time", description="通过快递公司编码、收寄件地址、下单时间、业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估", structured_output=False)
 async def estimate_time(ctx: Context,
                         kuaidi_com: str = Field(description="快递公司编码，一律用小写字母；目前仅支持：圆通：yuantong，中通：zhongtong，顺丰：shunfeng，顺丰快运：shunfengkuaiyun，京东：jd，极兔速递：jtexpress，申通：shentong，韵达：yunda，EMS：ems，跨越：kuayue，德邦快递：debangkuaidi，EMS-国际件：emsguoji，邮政国内:youzhengguonei，国际包裹：youzhengguoji，宅急送：zhaijisong，芝麻开门：zhimakaimen，联邦快递：lianbangkuaidi，天地华宇：tiandihuayu，安能快运：annengwuliu，京广速递：jinguangsudikuaijian，加运美：jiayunmeiwuliu"),
                         from_loc: str = Field(description="出发地，例如：广东省深圳市南山区"),
@@ -69,7 +69,7 @@ async def estimate_time(ctx: Context,
     return response
 
 
-@mcp.tool(name="estimate_time_with_logistic", description="通过快递公司编码、收寄件地址、下单时间、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估")
+@mcp.tool(name="estimate_time_with_logistic", description="通过快递公司编码、收寄件地址、下单时间、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估", structured_output=False)
 async def estimate_time_with_logistic(ctx: Context,
                                       kuaidi_com: str = Field(description="快递公司编码，一律用小写字母；目前仅支持：圆通：yuantong，中通：zhongtong，顺丰：shunfeng，顺丰快运：shunfengkuaiyun，京东：jd，极兔速递：jtexpress，申通：shentong，韵达：yunda，EMS：ems，跨越：kuayue，德邦快递：debangkuaidi，EMS-国际件：emsguoji，邮政国内:youzhengguonei，国际包裹：youzhengguoji，宅急送：zhaijisong，芝麻开门：zhimakaimen，联邦快递：lianbangkuaidi，天地华宇：tiandihuayu，安能快运：annengwuliu，京广速递：jinguangsudikuaijian，加运美：jiayunmeiwuliu"),
                                       from_loc: str = Field(description="出发地，例如：广东省深圳市南山区"),
@@ -99,7 +99,7 @@ async def estimate_time_with_logistic(ctx: Context,
     return response
 
 
-@mcp.tool(name="estimate_price", description="通过快递公司、收寄件地址和重量，预估快递公司运费")
+@mcp.tool(name="estimate_price", description="通过快递公司、收寄件地址和重量，预估快递公司运费", structured_output=False)
 async def estimate_price(ctx: Context,
                          kuaidi_com: str = Field(description="快递公司的编码，一律用小写字母；目前仅支持：顺丰：shunfeng，京东：jd，德邦快递：debangkuaidi，圆通：yuantong，中通：zhongtong，申通：shentong，韵达：yunda，EMS：ems"),
                          rec_addr: str = Field(description="收件地址，如广东深圳南山区"),
