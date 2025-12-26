@@ -1,14 +1,19 @@
+import json
 import os
+from typing import Type, Any
 
 import httpx
 from mcp.server.fastmcp import FastMCP, Context
+from mcp.types import CallToolResult, TextContent
 from pydantic import Field
+
+from models import QueryTraceVO, EstimateTimeVO, EstimatePriceVO
 
 # 创建MCP服务器实例
 mcp = FastMCP(
     name="kuaidi100_mcp",
     instructions="This is a MCP server for kuaidi100 API.",
-    stateless_http=True
+    stateless_http=True,
 )
 
 """
@@ -18,10 +23,11 @@ mcp = FastMCP(
 """
 kuaidi100_api_url = "https://api.kuaidi100.com/stdio/"
 
-@mcp.tool(name="query_trace", description="根据快递单号，返回对应的实时物流轨迹信息", structured_output=False)
+
+@mcp.tool(name="query_trace", description="根据快递单号，返回对应的实时物流轨迹信息")
 async def query_trace(ctx: Context,
                       kuaidi_num: str = Field(description="快递单号"),
-                      phone: str = Field(description="手机号，仅顺丰速运、顺丰快运、中通快递必填", default="")) -> str:
+                      phone: str = Field(description="手机号，仅顺丰速运、顺丰快运、中通快递必填",default="")) -> CallToolResult:
     """
     查询物流轨迹服务, 根据快递单号查询物流轨迹
     """
@@ -37,16 +43,18 @@ async def query_trace(ctx: Context,
         "phone": phone,
     }
     response = await http_get(kuaidi100_api_url + method, params)
-    return response
+    return handle_json_response(response, response_format, QueryTraceVO)
 
 
-@mcp.tool(name="estimate_time", description="通过快递公司编码、收寄件地址、下单时间、业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估", structured_output=False)
+
+@mcp.tool(name="estimate_time", description="通过快递公司编码、收寄件地址、下单时间、业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估")
 async def estimate_time(ctx: Context,
-                        kuaidi_com: str = Field(description="快递公司编码，一律用小写字母；目前仅支持：圆通：yuantong，中通：zhongtong，顺丰：shunfeng，顺丰快运：shunfengkuaiyun，京东：jd，极兔速递：jtexpress，申通：shentong，韵达：yunda，EMS：ems，跨越：kuayue，德邦快递：debangkuaidi，EMS-国际件：emsguoji，邮政国内:youzhengguonei，国际包裹：youzhengguoji，宅急送：zhaijisong，芝麻开门：zhimakaimen，联邦快递：lianbangkuaidi，天地华宇：tiandihuayu，安能快运：annengwuliu，京广速递：jinguangsudikuaijian，加运美：jiayunmeiwuliu"),
+                        kuaidi_com: str = Field(
+                            description="快递公司编码，一律用小写字母；目前仅支持：圆通：yuantong，中通：zhongtong，顺丰：shunfeng，顺丰快运：shunfengkuaiyun，京东：jd，极兔速递：jtexpress，申通：shentong，韵达：yunda，EMS：ems，跨越：kuayue，德邦快递：debangkuaidi，EMS-国际件：emsguoji，邮政国内:youzhengguonei，国际包裹：youzhengguoji，宅急送：zhaijisong，芝麻开门：zhimakaimen，联邦快递：lianbangkuaidi，天地华宇：tiandihuayu，安能快运：annengwuliu，京广速递：jinguangsudikuaijian，加运美：jiayunmeiwuliu"),
                         from_loc: str = Field(description="出发地，例如：广东省深圳市南山区"),
                         to_loc: str = Field(description="目的地，例如：北京海淀区"),
                         order_time: str = Field(description="下单时间，格式要求yyyy-MM-dd HH:mm:ss，例如：2023-08-08 08:08:08", default=""),
-                        exp_type: str = Field(description="业务/产品类型，如：标准快递")) -> str:
+                        exp_type: str = Field(description="业务/产品类型，如：标准快递")) -> CallToolResult:
     """
     通过快递公司编码、收寄件地址、下单时间和业务/产品类型来预估快递可送达的时间，以及过程需要花费的时间；用于寄件前快递送达时间预估",
     """
@@ -65,19 +73,17 @@ async def estimate_time(ctx: Context,
         "expType": exp_type,
     }
     response = await http_get(kuaidi100_api_url + method, params)
+    return handle_json_response(response, response_format, EstimateTimeVO)
 
-    return response
 
-
-@mcp.tool(name="estimate_time_with_logistic", description="通过快递公司编码、收寄件地址、下单时间、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估", structured_output=False)
+@mcp.tool(name="estimate_time_with_logistic",description="通过快递公司编码、收寄件地址、下单时间、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估")
 async def estimate_time_with_logistic(ctx: Context,
                                       kuaidi_com: str = Field(description="快递公司编码，一律用小写字母；目前仅支持：圆通：yuantong，中通：zhongtong，顺丰：shunfeng，顺丰快运：shunfengkuaiyun，京东：jd，极兔速递：jtexpress，申通：shentong，韵达：yunda，EMS：ems，跨越：kuayue，德邦快递：debangkuaidi，EMS-国际件：emsguoji，邮政国内:youzhengguonei，国际包裹：youzhengguoji，宅急送：zhaijisong，芝麻开门：zhimakaimen，联邦快递：lianbangkuaidi，天地华宇：tiandihuayu，安能快运：annengwuliu，京广速递：jinguangsudikuaijian，加运美：jiayunmeiwuliu"),
                                       from_loc: str = Field(description="出发地，例如：广东省深圳市南山区"),
                                       to_loc: str = Field(description="目的地，例如：北京市海淀区"),
                                       order_time: str = Field(description="下单时间，格式要求yyyy-MM-dd HH:mm:ss, 例如：2023-08-08 08:08:08；取query_trace服务返回数据中最早物流轨迹的时间即可",default=""),
                                       exp_type: str = Field(description="业务或产品类型，如：标准快递"),
-                                      logistic: str = Field(description="历史物流轨迹信息，用于预测在途时还需多长时间到达；一般情况下取query_trace服务返回数据的历史物流轨迹信息转为json数组即可，数据格式为：[{\"time\":\"2025-05-09 13:15:26\",\"context\":\"您的快件离开【吉林省吉林市桦甸市】，已发往【长春转运中心】\"},{\"time\":\"2025-05-09 12:09:38\",\"context\":\"您的快件在【吉林省吉林市桦甸市】已揽收\"}]；time为物流轨迹节点的时间，context为在该物流轨迹节点的描述"),
-                                      ) -> str:
+                                      logistic: str = Field(description="历史物流轨迹信息，用于预测在途时还需多长时间到达；一般情况下取query_trace服务返回数据的历史物流轨迹信息转为json数组即可，数据格式为：[{\"time\":\"2025-05-09 13:15:26\",\"context\":\"您的快件离开【吉林省吉林市桦甸市】，已发往【长春转运中心】\"},{\"time\":\"2025-05-09 12:09:38\",\"context\":\"您的快件在【吉林省吉林市桦甸市】已揽收\"}]；time为物流轨迹节点的时间，context为在该物流轨迹节点的描述")) -> CallToolResult:
     """
     通过快递公司编码、收寄件地址、下单时间和业务/产品类型、历史物流轨迹信息来预估快递送达的时间；用于在途快递的到达时间预估。接口返回的now属性为当前时间，使用arrivalTime-now计算预计还需运输时间
     """
@@ -96,15 +102,15 @@ async def estimate_time_with_logistic(ctx: Context,
         "logistic": logistic,
     }
     response = await http_get(kuaidi100_api_url + method, params)
-    return response
+    return handle_json_response(response, response_format, EstimateTimeVO)
 
 
-@mcp.tool(name="estimate_price", description="通过快递公司、收寄件地址和重量，预估快递公司运费", structured_output=False)
+@mcp.tool(name="estimate_price", description="通过快递公司、收寄件地址和重量，预估快递公司运费")
 async def estimate_price(ctx: Context,
                          kuaidi_com: str = Field(description="快递公司的编码，一律用小写字母；目前仅支持：顺丰：shunfeng，京东：jd，德邦快递：debangkuaidi，圆通：yuantong，中通：zhongtong，申通：shentong，韵达：yunda，EMS：ems"),
                          rec_addr: str = Field(description="收件地址，如广东深圳南山区"),
                          send_addr: str = Field(description="寄件地址，如北京海淀区"),
-                         weight: str = Field(description="重量，默认单位为kg，参数无需带单位，如1.0；默认重量为1kg"),) -> str :
+                         weight: str = Field(description="重量，默认单位为kg，参数无需带单位，如1.0；默认重量为1kg")) -> CallToolResult:
     """
     通过快递公司、收寄件地址和重量，预估快递公司运费
     """
@@ -122,7 +128,7 @@ async def estimate_price(ctx: Context,
         "weight": weight,
     }
     response = await http_get(kuaidi100_api_url + method, params)
-    return response
+    return handle_json_response(response, response_format, EstimatePriceVO)
 
 
 def get_api_key(ctx: Context) -> str:
@@ -138,7 +144,6 @@ def get_api_key(ctx: Context) -> str:
     if not kuaidi100_api_key:
         raise Exception('error: KUAIDI100_API_KEY not set')
     return kuaidi100_api_key
-
 
 def get_response_format(ctx: Context) -> str:
     """
@@ -169,6 +174,38 @@ async def http_get(url: str,
         raise Exception(f"Failed to parse response: {str(e)}") from e
 
 
+def handle_json_response(
+        response: str,
+        response_format: str,
+        model_class: Type[Any],) -> CallToolResult:
+    """
+    通用 JSON 响应处理器，用于：
+    - 解析 JSON 字符串
+    - 实例化 Pydantic 模型
+    - 调用 .markdown() 方法生成 Markdown
+    - 返回标准化的 CallToolResult
+
+    :param response: 原始 API 返回的字符串（JSON 格式）
+    :param response_format: 响应格式，可选 "json" 或 "markdown"
+    :param model_class: Pydantic 模型类，如 EstimateTimeVO、QueryTraceVO 等
+    :return: CallToolResult
+    """
+    if response_format == "json":
+        json_response = json.loads(response)
+        # 实例化模型
+        vo_instance = model_class(**json_response)
+        # 生成 Markdown（要求模型有 .markdown() 方法）
+        markdown_text = vo_instance.markdown()
+        return CallToolResult(
+            content=[TextContent(type="text", text=markdown_text)],
+            structuredContent=json_response,
+            isError=False,
+        )
+    else:
+        return CallToolResult(
+            content=[TextContent(type="text", text=response)],
+            isError=False,
+        )
+
 if __name__ == "__main__":
     mcp.run(transport="streamable-http")
-
